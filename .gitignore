@@ -1,0 +1,33 @@
+# File di configurazione sensibili
+.env
+
+# Dati di licenza locali
+license_data.json
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Profili utente
+profiles/
+
+# File di build
+build/
+dist/
+*.egg-info/
+
+# File di sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Log files
+*.log

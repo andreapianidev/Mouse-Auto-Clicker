@@ -1,7 +1,7 @@
 # 🖱️ Mouse Auto Clicker - Applicazione per Click Automatici
 
 **Autore:** Andrea Piani  
-**Versione:** 1.0.0  
+**Versione:** 2.0.0  
 **Linguaggio:** Python 3.7+
 
 Un'applicazione desktop Python con interfaccia grafica intuitiva che simula click automatici del mouse a intervalli casuali. Perfetta per automazioni semplici e test di interfacce utente.
@@ -19,7 +19,7 @@ Un'applicazione desktop Python con interfaccia grafica intuitiva che simula clic
 
 ## 📸 Screenshot
 
-![Mouse Auto Clicker Interface](https://www.andreapiani.com/autoclicker.png)
+![Mouse Auto Clicker Interface](https://www.andreapiani.com/autoclicker1.png)
 
 *Interfaccia principale dell'applicazione con tutte le opzioni di configurazione*
 

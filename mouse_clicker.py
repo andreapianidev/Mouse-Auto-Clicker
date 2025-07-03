@@ -17,6 +17,7 @@ import sys
 import json
 import os
 from typing import List, Dict, Tuple, Optional
+from license_manager import LicenseManager
 
 
 # === CLASSE DIALOG PER CLICK ===
@@ -219,6 +220,13 @@ class MouseClickerApp:
         self.root.resizable(True, True)
         self.root.minsize(900, 1000)
         
+        # Sistema di licenze
+        self.license_manager = LicenseManager()
+        
+        # Controlla se può usare l'app
+        if not self.check_license_on_startup():
+            return
+        
         # Variabili di controllo
         self.is_running = False
         self.click_thread = None
@@ -242,6 +250,60 @@ class MouseClickerApp:
         pyautogui.FAILSAFE = True  # Muovi mouse nell'angolo per fermare
         
         self.setup_ui()
+        self.update_license_status()
+    
+    def check_license_on_startup(self):
+        """Controlla la licenza all'avvio dell'applicazione"""
+        if not self.license_manager.can_use_app():
+            # Mostra dialog di acquisto licenza
+            result = self.license_manager.show_license_dialog(self.root)
+            
+            if result == 'activated':
+                return True
+            else:
+                # Chiude l'applicazione se non ha licenza
+                messagebox.showinfo("Limite Raggiunto", 
+                                   f"Hai raggiunto il limite di {self.license_manager.max_free_uses} utilizzi gratuiti.\n"
+                                   "Acquista la licenza Premium per continuare ad usare l'app.")
+                self.root.quit()
+                return False
+        
+        # Incrementa il contatore degli utilizzi
+        self.license_manager.increment_usage()
+        return True
+    
+    def update_license_status(self):
+        """Aggiorna lo status della licenza nell'interfaccia"""
+        if hasattr(self, 'license_status_var'):
+            if self.license_manager.license_data['premium_license']:
+                self.license_status_var.set("🔓 Licenza Premium Attiva")
+                self.license_status_label.config(foreground='green')
+                # Nascondi il pulsante Premium se esiste
+                if hasattr(self, 'premium_button') and self.premium_button:
+                    self.premium_button.destroy()
+                    self.premium_button = None
+            else:
+                remaining = self.license_manager.get_remaining_uses()
+                self.license_status_var.set(f"🆓 Utilizzi gratuiti rimanenti: {remaining}")
+                if remaining <= 1:
+                    self.license_status_label.config(foreground='red')
+                elif remaining <= 2:
+                    self.license_status_label.config(foreground='orange')
+                else:
+                     self.license_status_label.config(foreground='blue')
+    
+    def show_license_dialog(self):
+        """Mostra il dialog per l'acquisto della licenza"""
+        result = self.license_manager.show_license_dialog(self.root)
+        if result == 'activated':
+            # Aggiorna l'interfaccia dopo l'attivazione
+            self.update_license_status()
+            # Rimuovi il pulsante di acquisto se ora è premium
+            if self.license_manager.license_data['premium_license']:
+                # Ricrea l'interfaccia per rimuovere il pulsante
+                messagebox.showinfo("Licenza Attivata!", 
+                                   "Licenza Premium attivata con successo!\n"
+                                   "Riavvia l'applicazione per vedere tutte le modifiche.")
         
     def setup_ui(self):
         """Configura l'interfaccia utente"""
@@ -257,10 +319,24 @@ class MouseClickerApp:
         main_frame.rowconfigure(1, weight=1)  # Il notebook si espande
         main_frame.rowconfigure(4, weight=1)  # Il log si espande
         
-        # Titolo
-        title_label = ttk.Label(main_frame, text="Mouse Auto Clicker", 
-                               font=('Arial', 14, 'bold'))
-        title_label.grid(row=0, column=0, columnspan=2, pady=(0, 20))
+        # Titolo rimosso per migliorare la leggibilità
+        
+        # Status licenza
+        license_frame = ttk.Frame(main_frame)
+        license_frame.grid(row=0, column=0, columnspan=2, pady=(35, 20), sticky=(tk.W, tk.E))
+        
+        self.license_status_var = tk.StringVar()
+        self.license_status_label = ttk.Label(license_frame, textvariable=self.license_status_var,
+                                             font=('Arial', 10, 'bold'))
+        self.license_status_label.pack(side=tk.LEFT)
+        
+        # Pulsante per acquistare licenza (solo se non premium)
+        self.premium_button = None
+        if not self.license_manager.license_data['premium_license']:
+            self.premium_button = ttk.Button(license_frame, text="💎 Acquista Premium", 
+                      command=self.show_license_dialog,
+                      style='Accent.TButton')
+            self.premium_button.pack(side=tk.RIGHT)
         
         # Notebook per organizzare le impostazioni
         notebook = ttk.Notebook(main_frame)
