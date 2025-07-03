@@ -245,8 +245,8 @@ L'autore **Andrea Piani** non è responsabile per:
 ## 👨‍💻 Autore
 
 **Andrea Piani**  
-📧 Email: [inserisci email]  
-🐙 GitHub: [@andreapiani](https://github.com/andreapiani)  
+📧 Linktree e contatti: https://linktr.ee/andreapianidev
+🐙 GitHub: [@andreapiani](https://github.com/andreapianidev)  
 
 ---
 
