@@ -117,16 +117,26 @@ class LicenseDialog:
         # Crea finestra dialog
         self.dialog = tk.Toplevel(parent)
         self.dialog.title("Licenza Premium - Mouse Auto Clicker")
-        self.dialog.geometry("600x800")
-        self.dialog.resizable(False, False)
+        
+        # Dimensioni dinamiche basate sulla risoluzione dello schermo
+        screen_width = self.dialog.winfo_screenwidth()
+        screen_height = self.dialog.winfo_screenheight()
+        
+        # Calcola dimensioni ottimali (max 90% dello schermo)
+        max_width = min(650, int(screen_width * 0.9))
+        max_height = min(850, int(screen_height * 0.9))
+        
+        self.dialog.geometry(f"{max_width}x{max_height}")
+        self.dialog.resizable(True, True)
+        self.dialog.minsize(500, 600)  # Dimensioni minime
         self.dialog.transient(parent)
         self.dialog.grab_set()
         
         # Centra la finestra
         self.dialog.update_idletasks()
-        x = (self.dialog.winfo_screenwidth() // 2) - (600 // 2)
-        y = (self.dialog.winfo_screenheight() // 2) - (800 // 2)
-        self.dialog.geometry(f"600x800+{x}+{y}")
+        x = (screen_width // 2) - (max_width // 2)
+        y = (screen_height // 2) - (max_height // 2)
+        self.dialog.geometry(f"{max_width}x{max_height}+{x}+{y}")
         
         self.setup_ui()
         
@@ -135,52 +145,89 @@ class LicenseDialog:
     
     def setup_ui(self):
         """Configura l'interfaccia del dialog"""
-        main_frame = ttk.Frame(self.dialog, padding="20")
+        # Canvas e scrollbar per gestire contenuto lungo
+        canvas = tk.Canvas(self.dialog, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(self.dialog, orient="vertical", command=canvas.yview)
+        scrollable_frame = ttk.Frame(canvas)
+        
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # Pack canvas e scrollbar
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Frame principale con padding
+        main_frame = ttk.Frame(scrollable_frame, padding="20")
         main_frame.pack(fill=tk.BOTH, expand=True)
         
+        # Bind mouse wheel per scrolling
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        
+        def bind_mousewheel(event):
+            canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        
+        def unbind_mousewheel(event):
+            canvas.unbind_all("<MouseWheel>")
+        
+        canvas.bind('<Enter>', bind_mousewheel)
+        canvas.bind('<Leave>', unbind_mousewheel)
+        
+        # Gestione ridimensionamento finestra
+        def on_canvas_configure(event):
+            canvas.itemconfig(canvas.find_all()[0], width=event.width)
+        
+        canvas.bind('<Configure>', on_canvas_configure)
+        
         # Titolo
-        title_label = ttk.Label(main_frame, text="🚀 Sblocca Mouse Auto Clicker Premium!", 
-                               font=('Arial', 18, 'bold'))
-        title_label.pack(pady=(0, 25))
+        title_label = ttk.Label(main_frame, text="Sblocca Mouse Auto Clicker Premium!", 
+                               font=('Segoe UI', 16, 'bold'))
+        title_label.pack(pady=(0, 20))
         
         # Messaggio di benvenuto
         welcome_frame = ttk.Frame(main_frame)
-        welcome_frame.pack(fill=tk.X, pady=(0, 20))
+        welcome_frame.pack(fill=tk.X, pady=(0, 15))
         
         welcome_text = "Acquista la licenza Premium per utilizzare l'app senza limiti!"
         
-        ttk.Label(welcome_frame, text=welcome_text, font=('Arial', 13), 
-                 justify=tk.CENTER, wraplength=550).pack()
+        ttk.Label(welcome_frame, text=welcome_text, font=('Segoe UI', 11), 
+                 justify=tk.CENTER, wraplength=500).pack()
         
         # Caratteristiche Premium
-        features_frame = ttk.LabelFrame(main_frame, text="✨ Caratteristiche Premium", padding="15")
-        features_frame.pack(fill=tk.X, pady=(0, 20))
+        features_frame = ttk.LabelFrame(main_frame, text="Caratteristiche Premium", padding="12")
+        features_frame.pack(fill=tk.X, pady=(0, 15))
         
         features = [
-            "✅ Utilizzi illimitati",
-            "✅ Tutte le funzioni avanzate",
-            "✅ Sequenze e macro personalizzate",
-            "✅ Gestione profili completa",
-            "✅ Supporto prioritario",
-            "✅ Aggiornamenti gratuiti",
-            "✅ Nessuna pubblicità"
+            "• Utilizzi illimitati",
+            "• Tutte le funzioni avanzate",
+            "• Sequenze e macro personalizzate",
+            "• Gestione profili completa",
+            "• Supporto prioritario",
+            "• Aggiornamenti gratuiti",
+            "• Nessuna pubblicità"
         ]
         
         for feature in features:
-            ttk.Label(features_frame, text=feature, font=('Arial', 12)).pack(anchor=tk.W, pady=3)
+            ttk.Label(features_frame, text=feature, font=('Segoe UI', 10)).pack(anchor=tk.W, pady=2)
         
         # Prezzo
         price_frame = ttk.Frame(main_frame)
-        price_frame.pack(fill=tk.X, pady=(0, 20))
+        price_frame.pack(fill=tk.X, pady=(0, 15))
         
-        ttk.Label(price_frame, text="💰 Prezzo: €9.99 (una tantum)", 
-                 font=('Arial', 16, 'bold'), foreground='green').pack()
+        ttk.Label(price_frame, text="Prezzo: €9.99 (una tantum)", 
+                 font=('Segoe UI', 14, 'bold'), foreground='#006400').pack()
         ttk.Label(price_frame, text="Nessun abbonamento - Paghi una volta, usi per sempre!", 
-                 font=('Arial', 12)).pack(pady=(8, 0))
+                 font=('Segoe UI', 10)).pack(pady=(5, 0))
         
         # Informazioni acquisto
-        purchase_frame = ttk.LabelFrame(main_frame, text="🛒 Come Acquistare", padding="15")
-        purchase_frame.pack(fill=tk.X, pady=(0, 20))
+        purchase_frame = ttk.LabelFrame(main_frame, text="Come Acquistare", padding="12")
+        purchase_frame.pack(fill=tk.X, pady=(0, 15))
         
         info_text = "Per acquistare la licenza Premium:\n" \
                    "1. Contatta il supporto via WhatsApp o email\n" \
@@ -188,30 +235,30 @@ class LicenseDialog:
                    "3. Riceverai la chiave di licenza\n" \
                    "4. Inserisci la chiave qui sotto per attivare"
         
-        ttk.Label(purchase_frame, text=info_text, font=('Arial', 12), 
-                 justify=tk.LEFT).pack(anchor=tk.W, pady=(0, 15))
+        ttk.Label(purchase_frame, text=info_text, font=('Segoe UI', 10), 
+                 justify=tk.LEFT).pack(anchor=tk.W, pady=(0, 12))
         
         # Pulsanti di contatto
         contact_frame = ttk.Frame(purchase_frame)
-        contact_frame.pack(fill=tk.X, pady=(0, 10))
+        contact_frame.pack(fill=tk.X, pady=(0, 8))
         
-        ttk.Button(contact_frame, text="📱 WhatsApp (Veloce)", 
-                  command=self.open_whatsapp_support).pack(fill=tk.X, pady=(0, 8))
+        ttk.Button(contact_frame, text="WhatsApp (Veloce)", 
+                  command=self.open_whatsapp_support).pack(fill=tk.X, pady=(0, 6))
         
-        ttk.Button(contact_frame, text="📧 Email Supporto", 
+        ttk.Button(contact_frame, text="Email Supporto", 
                   command=self.open_email_support).pack(fill=tk.X)
         
         # Inserimento chiave licenza
-        license_frame = ttk.LabelFrame(main_frame, text="🔑 Hai già una licenza?", padding="15")
-        license_frame.pack(fill=tk.X, pady=(0, 20))
+        license_frame = ttk.LabelFrame(main_frame, text="Hai già una licenza?", padding="12")
+        license_frame.pack(fill=tk.X, pady=(0, 15))
         
         ttk.Label(license_frame, text="Inserisci la tua chiave di licenza:", 
-                 font=('Arial', 12)).pack(anchor=tk.W, pady=(0, 8))
+                 font=('Segoe UI', 10)).pack(anchor=tk.W, pady=(0, 6))
         
         self.license_key_var = tk.StringVar()
         license_entry = ttk.Entry(license_frame, textvariable=self.license_key_var, 
-                                 font=('Arial', 16, 'bold'), width=35, state='normal')
-        license_entry.pack(fill=tk.X, pady=(0, 15), ipady=8)
+                                 font=('Segoe UI', 12), width=40, state='normal')
+        license_entry.pack(fill=tk.X, pady=(0, 12), ipady=6)
         license_entry.focus_set()  # Imposta il focus sul campo
         
         # Placeholder text
@@ -232,30 +279,30 @@ class LicenseDialog:
         license_entry.bind('<FocusIn>', on_focus_in)
         license_entry.bind('<FocusOut>', on_focus_out)
         
-        activate_button = ttk.Button(license_frame, text="🔓 Attiva Licenza", 
+        activate_button = ttk.Button(license_frame, text="Attiva Licenza", 
                                     command=self.activate_license)
-        activate_button.pack(pady=(0, 10))
+        activate_button.pack(pady=(0, 8))
         
         # Bind Enter key per attivare la licenza
         license_entry.bind('<Return>', lambda e: self.activate_license())
         
         # Pulsanti finali
         button_frame = ttk.Frame(main_frame)
-        button_frame.pack(fill=tk.X, pady=(20, 0))
+        button_frame.pack(fill=tk.X, pady=(15, 0))
         
-        ttk.Button(button_frame, text="❌ Chiudi", 
-                  command=self.close_dialog).pack(side=tk.RIGHT, padx=(10, 0))
+        ttk.Button(button_frame, text="Chiudi", 
+                  command=self.close_dialog).pack(side=tk.RIGHT, padx=(8, 0))
         
-        ttk.Button(button_frame, text="ℹ️ Più Informazioni", 
+        ttk.Button(button_frame, text="Più Informazioni", 
                   command=self.open_info_page).pack(side=tk.RIGHT)
         
         # Device ID per supporto
         device_frame = ttk.Frame(main_frame)
-        device_frame.pack(fill=tk.X, pady=(20, 0))
+        device_frame.pack(fill=tk.X, pady=(15, 0))
         
         device_id = self.license_manager.license_data['device_id'][:8]
         ttk.Label(device_frame, text=f"Device ID (per supporto): {device_id}...", 
-                 font=('Arial', 10), foreground='gray').pack()
+                 font=('Segoe UI', 9), foreground='gray').pack()
     
     def open_whatsapp_support(self):
         """Apre WhatsApp per contattare il supporto"""

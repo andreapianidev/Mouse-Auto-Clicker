@@ -38,6 +38,14 @@ Un'applicazione desktop Python con interfaccia grafica intuitiva che simula clic
 
 ## 🛠️ Installazione
 
+### 🪟 Utenti Windows
+
+Se riscontri problemi durante l'installazione su Windows, consulta la nostra guida dettagliata:
+
+➡️ **[Guida all'installazione per Windows](README_WINDOWS.md)**
+
+Questa guida include soluzioni per errori di connessione e uno script di installazione automatico (`install_windows.bat`).
+
 ### Metodo 1: Clone da GitHub
 ```bash
 # Clona il repository

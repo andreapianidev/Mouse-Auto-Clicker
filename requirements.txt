@@ -1,4 +1,15 @@
 # Dipendenze per Mouse Clicker
 # Installa con: pip install -r requirements.txt
 
+# Core dependencies
 pyautogui>=0.9.54
+
+# Windows specific dependencies
+pillow>=8.0.0
+opencv-python>=4.5.0
+numpy>=1.21.0
+
+# Cross-platform GUI support
+tkinter; sys_platform != "darwin"
+pyobjc-framework-Quartz; sys_platform == "darwin"
+pyobjc-framework-ApplicationServices; sys_platform == "darwin"
