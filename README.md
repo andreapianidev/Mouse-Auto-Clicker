@@ -7,7 +7,6 @@
 Un'applicazione desktop Python con interfaccia grafica intuitiva che simula click automatici del mouse a intervalli casuali. Perfetta per automazioni semplici e test di interfacce utente.
 
 ## 🚀 Caratteristiche Principali
-
 - 🎯 **Interfaccia Intuitiva**: GUI semplice e funzionale realizzata con tkinter
 - ⏱️ **Intervalli Personalizzabili**: Configura tempi minimi e massimi tra i click
 - 🎮 **Controllo Completo**: Pulsanti dedicati per avviare e fermare l'automazione
@@ -18,8 +17,84 @@ Un'applicazione desktop Python con interfaccia grafica intuitiva che simula clic
 - 📦 **Portabilità**: Facilmente compilabile in eseguibile .exe per Windows
 
 ## 📸 Screenshot
-
 ![Mouse Auto Clicker Interface](https://www.andreapiani.com/autoclicker1.png)
+
+*Interfaccia principale dell'applicazione con tutte le opzioni di configurazione*
+
+## 📋 Requisiti di Sistema
+| Componente | Versione | Note |
+|------------|----------|------|
+| **Python** | 3.7+ | Versione consigliata: 3.9+ |
+| **tkinter** | Incluso | Libreria GUI standard Python |
+| **pyautogui** | ≥0.9.54 | Per il controllo del mouse |
+
+### Sistemi Operativi Supportati
+- 🪟 **Windows** 10/11
+- 🍎 **macOS** 10.14+
+- 🐧 **Linux** (Ubuntu 18.04+, Debian 10+)
+
+## 🛠️ Installazione
+
+### 🪟 Utenti Windows
+Se riscontri problemi durante l'installazione su Windows, consulta la nostra guida dettagliata:
+
+➡️ **[Guida all'installazione per Windows](README_WINDOWS.md)**
+
+Questa guida include soluzioni per errori di connessione e uno script di installazione automatico (`install_windows.bat`).
+
+### Metodo 1: Clone da GitHub
+```bash
+# Clona il repository
+git clone https://github.com/andreapiani/mouse-auto-clicker.git
+cd mouse-auto-clicker
+
+# Installa le dipendenze
+pip install -r requirements.txt
+```
+
+### Metodo 2: Download diretto
+1. Scarica il progetto come ZIP
+2. Estrai i file in una cartella
+3. Apri il terminale nella cartella del progetto
+4. Esegui: `pip install -r requirements.txt`
+
+## 🎯 Guida all'Uso
+
+### Avvio Rapido
+```bash
+python mouse_clicker.py
+```
+
+### Configurazione
+1. **Imposta Intervalli**
+   - 🕐 **Minimo**: Tempo minimo tra i click (es. 1.0 secondi)
+   - 🕕 **Massimo**: Tempo massimo tra i click (es. 5.0 secondi)
+
+2. **Posizionamento**
+   - Sposta il cursore nella posizione desiderata
+   - I click avverranno esattamente in quella posizione
+
+3. **Controllo**
+   - ▶️ **Avvia**: Inizia la sequenza di click automatici
+   - ⏹️ **Ferma**: Interrompe immediatamente l'automazione
+
+### 🔥 Suggerimenti Pro
+- Usa intervalli più lunghi per automazioni discrete
+- Monitora il log per verificare l'attività
+- Testa sempre con intervalli brevi prima dell'uso finale
+
+## 🛡️ Sicurezza e Controlli
+
+### Sistema Failsafe
+- 🚨 **Emergenza**: Sposta rapidamente il mouse nell'**angolo superiore sinistro** per stop immediato
+- 📊 **Monitoraggio**: Stato dell'applicazione sempre visibile
+- 📝 **Tracciabilità**: Log completo di tutti i click con timestamp precisi
+
+### Best Practices
+- ✅ Testa sempre con intervalli brevi
+- ✅ Verifica la posizione del cursore prima di avviare
+- ✅ Mantieni il controllo dell'applicazione
+- ❌ Non utilizzare per violare ToS di servizi online
 
 *Interfaccia principale dell'applicazione con tutte le opzioni di configurazione*
 
