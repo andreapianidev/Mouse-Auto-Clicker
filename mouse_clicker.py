@@ -249,6 +249,9 @@ class MouseClickerApp:
         # Configurazione pyautogui
         pyautogui.FAILSAFE = True  # Muovi mouse nell'angolo per fermare
         
+        # Configura stili per Windows
+        self.setup_styles()
+        
         self.setup_ui()
         self.update_license_status()
     
@@ -305,10 +308,48 @@ class MouseClickerApp:
                                    "Licenza Premium attivata con successo!\n"
                                    "Riavvia l'applicazione per vedere tutte le modifiche.")
         
+    def setup_styles(self):
+        """Configura gli stili per l'interfaccia"""
+        style = ttk.Style()
+        
+        # Stile per Windows con migliore contrasto
+        if sys.platform == 'win32':
+            # Colori migliorati per Windows
+            style.theme_use('vista')  # Usa il tema Vista per un aspetto più moderno
+            
+            # Stile per i pulsanti principali
+            style.configure('Accent.TButton', 
+                          font=('Segoe UI', 10, 'bold'),
+                          padding=6)
+            
+            # Stile per i frame con bordo
+            style.configure('Bordered.TFrame',
+                          background='#f0f0f0',
+                          borderwidth=2,
+                          relief='sunken')
+            
+            # Stile per le label importanti
+            style.configure('Header.TLabel',
+                          font=('Segoe UI', 10, 'bold'),
+                          foreground='#1e3f66',  # Blu scuro
+                          padding=(0, 5, 0, 5))
+            
+            # Stile per i campi di input
+            style.configure('TEntry',
+                          fieldbackground='white',
+                          padding=3)
+            
+            # Stile per i notebook
+            style.configure('TNotebook',
+                          background='#f0f0f0')
+            style.configure('TNotebook.Tab',
+                          padding=[10, 4],
+                          font=('Segoe UI', 9, 'bold'))
+    
     def setup_ui(self):
         """Configura l'interfaccia utente"""
         # Frame principale
-        main_frame = ttk.Frame(self.root, padding="10")
+        main_frame = ttk.Frame(self.root, padding="10", style='Bordered.TFrame')
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Configurazione griglia
@@ -335,7 +376,7 @@ class MouseClickerApp:
         if not self.license_manager.license_data['premium_license']:
             self.premium_button = ttk.Button(license_frame, text="💎 Acquista Premium", 
                       command=self.show_license_dialog,
-                      style='Accent.TButton')
+                      style='Accent.TButton' if sys.platform == 'win32' else None)
             self.premium_button.pack(side=tk.RIGHT)
         
         # Notebook per organizzare le impostazioni
@@ -492,36 +533,51 @@ class MouseClickerApp:
         control_frame.grid(row=2, column=0, columnspan=2, pady=(0, 10))
         
         # Pulsante Avvia
-        self.start_button = ttk.Button(control_frame, text="▶ Avvia", 
-                                      command=self.start_clicking,
-                                      style='Accent.TButton')
+        start_icon = "▶" if sys.platform != 'win32' else ""
+        self.start_button = ttk.Button(control_frame, 
+                                     text=f"{start_icon} Avvia" if start_icon else "Avvia",
+                                     command=self.start_clicking,
+                                     style='Accent.TButton' if sys.platform == 'win32' else None)
         self.start_button.grid(row=0, column=0, padx=(0, 10))
         
         # Pulsante Ferma
-        self.stop_button = ttk.Button(control_frame, text="⏹ Ferma", 
-                                     command=self.stop_clicking,
-                                     state='disabled')
-        self.stop_button.grid(row=0, column=1)
+        stop_icon = "⏹" if sys.platform != 'win32' else ""
+        self.stop_button = ttk.Button(control_frame, 
+                                    text=f"{stop_icon} Ferma" if stop_icon else "Ferma",
+                                    command=self.stop_clicking,
+                                    state='disabled',
+                                    style='Accent.TButton' if sys.platform == 'win32' else None)
+        self.stop_button.grid(row=0, column=1, padx=(0, 10))
         
         # Stato applicazione e contatori
         status_frame = ttk.Frame(main_frame)
         status_frame.grid(row=3, column=0, columnspan=2, pady=(0, 10))
-        
+        # Barra di stato con stile migliorato
         self.status_var = tk.StringVar(value="Pronto")
-        status_label = ttk.Label(status_frame, textvariable=self.status_var,
-                                font=('Arial', 10, 'bold'))
-        status_label.grid(row=0, column=0, padx=(0, 20))
+        status_bar = ttk.Label(main_frame, 
+                             textvariable=self.status_var,
+                             relief=tk.SUNKEN, 
+                             anchor=tk.W,
+                             font=('Segoe UI', 9) if sys.platform == 'win32' else None,
+                             background='#f0f0f0' if sys.platform == 'win32' else None,
+                             foreground='#1a1a1a' if sys.platform == 'win32' else None,
+                             padding=(5, 3, 5, 3))
+        status_bar.grid(row=5, column=0, columnspan=2, sticky=(tk.W, tk.E), pady=(10, 0))
         
-        # Contatore click
+        # Contatore click con stile migliorato
         self.click_counter_var = tk.StringVar(value="Click eseguiti: 0")
-        counter_label = ttk.Label(status_frame, textvariable=self.click_counter_var,
-                                 font=('Arial', 9))
-        counter_label.grid(row=0, column=1)
+        click_counter = ttk.Label(main_frame, 
+                                textvariable=self.click_counter_var,
+                                font=('Segoe UI', 10, 'bold') if sys.platform == 'win32' else ('Arial', 10, 'bold'),
+                                style='Header.TLabel' if sys.platform == 'win32' else None)
+        click_counter.grid(row=3, column=1)
         
-        # Pulsante reset contatore
-        reset_button = ttk.Button(status_frame, text="Reset", 
-                                 command=self.reset_counter, width=8)
-        reset_button.grid(row=0, column=2, padx=(10, 0))
+        # Pulsante Resetta Contatore
+        reset_icon = "🔄" if sys.platform != 'win32' else ""
+        reset_button = ttk.Button(control_frame, 
+                                text=f"{reset_icon} Resetta Contatore" if reset_icon else "Resetta Contatore",
+                                command=self.reset_counter)
+        reset_button.grid(row=0, column=2, padx=(0, 10))
         
         # Frame per log
         log_frame = ttk.LabelFrame(main_frame, text="Log Click", padding="5")
@@ -2370,16 +2426,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# TODO: Miglioramenti futuri
-# - Implementare minimizzazione nella system tray
-# - Aggiungere opzione per click in coordinate fisse
-# - Implementare avvio automatico all'avvio del sistema
-# - Aggiungere profili salvabili per diverse configurazioni
-# - Implementare hotkey globali per start/stop
-# - Aggiungere statistiche sui click (totali, velocità media, ecc.)
-# - Implementare diversi tipi di click (sinistro, destro, doppio)
-# - Aggiungere opzione per sequenze di click personalizzate
-# - Implementare logging su file
-# - Aggiungere tema scuro/chiaro
