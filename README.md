@@ -258,3 +258,49 @@ Se questo progetto ti è stato utile, considera di:
 - 📢 Condividere con altri sviluppatori
 
 **Grazie per aver scelto Mouse Auto Clicker!** 🎉
+
+## 🆕 Nuove Funzionalità di Sicurezza
+
+La versione più recente include importanti miglioramenti alla sicurezza e alla stabilità dell'applicazione:
+
+### 🛡️ Protezione Avanzata
+- **Validazione Robusta**: Controlli completi su tutti gli input utente
+- **Gestione Errori**: Sistema avanzato di rilevamento e recupero da errori
+- **Limiti di Sicurezza**: Soglie automatiche per prevenire comportamenti anomali
+- **Protezione Thread**: Terminazione sicura dei processi di click
+- **Validazione Coordinate**: Controlli sui limiti dello schermo per evitare click fuori area
+
+### 📁 Gestione Profili Migliorata
+- **Operazioni Atomiche**: Salvataggio sicuro con file temporanei e backup
+- **Validazione JSON**: Controlli strutturali sui file di configurazione
+- **Limiti di Dimensione**: Protezione contro file di profilo eccessivamente grandi
+- **Sanitizzazione Nomi**: Pulizia automatica dei nomi file per prevenire problemi
+
+### 🔄 Sequenze di Click
+- **Validazione Sequenze**: Controlli su lunghezza e validità delle sequenze
+- **Controllo Errori**: Interruzione automatica dopo errori consecutivi
+- **Validazione Click**: Controlli su tipo, coordinate e ritardi per ogni click
+
+## 📸 Screenshot Nuova Versione
+
+![Interfaccia Principale](https://www.andreapiani.com/autoclicker1.png)
+
+*Interfaccia principale con nuove funzionalità di sicurezza*
+
+![Gestione Profili](https://www.andreapiani.com/autoclicker2.png)
+
+*Sistema migliorato di gestione profili*
+
+![Sequenze di Click](https://www.andreapiani.com/autoclicker3.png)
+
+*Editor avanzato di sequenze di click*
+
+## 📞 Contatti per Modifiche
+
+Hai bisogno di personalizzazioni o hai trovato un bug? Contattami:
+
+- 📧 **Email**: Disponibile sul mio Linktree
+- 🔗 **Linktree**: https://linktr.ee/andreapianidev
+- 💬 **GitHub**: Apri una issue sul repository
+
+Sono disponibile per implementare funzionalità personalizzate o risolvere problemi specifici secondo le tue esigenze.
